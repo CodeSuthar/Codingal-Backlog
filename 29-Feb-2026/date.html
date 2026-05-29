@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advanced Date & Age Calculator</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .card {
+            background: #f7f7f7;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            color: #444;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+        }
+
+        .result {
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #ffffff;
+            font-weight: bold;
+            color: #333;
+            line-height: 1.8;
+            border-left: 5px solid #667eea;
+        }
+
+        .countdown {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: #764ba2;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        @media(max-width:600px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>📅 Advanced Date & Age Calculator</h1>
+
+        <!-- AGE CALCULATOR -->
+
+        <div class="card">
+
+            <h2>🎂 Age Calculator</h2>
+
+            <label for="birthDate">Select Your Birth Date</label>
+
+            <input type="date" id="birthDate">
+
+            <button onclick="calculateAge()">
+                Calculate Age
+            </button>
+
+            <div class="result" id="ageResult"></div>
+
+        </div>
+
+        <!-- EVENT COUNTDOWN -->
+
+        <div class="card">
+
+            <h2>⏳ Event Countdown</h2>
+
+            <label for="eventDate">Select Event Date</label>
+
+            <input type="date" id="eventDate">
+
+            <button onclick="calculateEvent()">
+                Calculate Remaining Days
+            </button>
+
+            <div class="result" id="eventResult"></div>
+
+            <div class="countdown" id="liveCountdown"></div>
+
+        </div>
+
+        <div class="footer">
+            Built using HTML, CSS & JavaScript 🚀
+        </div>
+
+    </div>
+
+    <script>
+
+        let countdownInterval;
+
+        // AGE CALCULATOR
+
+        function calculateAge() {
+
+            let birthInput =
+                document.getElementById("birthDate").value;
+
+            let birthDate = new Date(birthInput);
+
+            let today = new Date();
+
+            if (!birthInput) {
+
+                document.getElementById("ageResult").innerHTML =
+                    "⚠ Please select your birth date!";
+
+                return;
+            }
+
+            let years =
+                today.getFullYear() - birthDate.getFullYear();
+
+            let months =
+                today.getMonth() - birthDate.getMonth();
+
+            let days =
+                today.getDate() - birthDate.getDate();
+
+            if (days < 0) {
+
+                months--;
+
+                let previousMonth =
+                    new Date(
+                        today.getFullYear(),
+                        today.getMonth(),
+                        0
+                    ).getDate();
+
+                days += previousMonth;
+            }
+
+            if (months < 0) {
+
+                years--;
+                months += 12;
+            }
+
+            // DAY NAME
+
+            let options = {
+                weekday: "long"
+            };
+
+            let birthDayName =
+                birthDate.toLocaleDateString(
+                    "en-US",
+                    options
+                );
+
+            document.getElementById("ageResult").innerHTML = `
+                🎉 You are <b>${years}</b> years,
+                <b>${months}</b> months and
+                <b>${days}</b> days old.<br><br>
+
+                📆 You were born on a
+                <b>${birthDayName}</b>.
+            `;
+        }
+
+        // EVENT CALCULATOR
+
+        function calculateEvent() {
+
+            let eventInput =
+                document.getElementById("eventDate").value;
+
+            let eventDate = new Date(eventInput);
+
+            let today = new Date();
+
+            if (!eventInput) {
+
+                document.getElementById("eventResult").innerHTML =
+                    "⚠ Please select an event date!";
+
+                return;
+            }
+
+            let diffTime =
+                eventDate - today;
+
+            let diffDays =
+                Math.ceil(
+                    diffTime /
+                    (1000 * 60 * 60 * 24)
+                );
+
+            // DAY NAME
+
+            let options = {
+                weekday: "long"
+            };
+
+            let eventDay =
+                eventDate.toLocaleDateString(
+                    "en-US",
+                    options
+                );
+
+            if (diffDays > 0) {
+
+                document.getElementById("eventResult").innerHTML = `
+                    📅 Event Day:
+                    <b>${eventDay}</b><br>
+
+                    ⌛ ${diffDays}
+                    days remaining until your event!
+                `;
+
+            } else if (diffDays === 0) {
+
+                document.getElementById("eventResult").innerHTML = `
+                    🎉 The event is TODAY!
+                `;
+
+            } else {
+
+                document.getElementById("eventResult").innerHTML = `
+                    ❌ The event date has already passed.
+                `;
+            }
+
+            startCountdown(eventDate);
+        }
+
+        // LIVE COUNTDOWN TIMER
+
+        function startCountdown(eventDate) {
+
+            clearInterval(countdownInterval);
+
+            countdownInterval = setInterval(() => {
+
+                let now = new Date().getTime();
+
+                let distance =
+                    eventDate.getTime() - now;
+
+                if (distance < 0) {
+
+                    clearInterval(countdownInterval);
+
+                    document.getElementById(
+                        "liveCountdown"
+                    ).innerHTML =
+                        "🎊 Event Started!";
+
+                    return;
+                }
+
+                let days =
+                    Math.floor(
+                        distance /
+                        (1000 * 60 * 60 * 24)
+                    );
+
+                let hours =
+                    Math.floor(
+                        (distance %
+                        (1000 * 60 * 60 * 24))
+                        /
+                        (1000 * 60 * 60)
+                    );
+
+                let minutes =
+                    Math.floor(
+                        (distance %
+                        (1000 * 60 * 60))
+                        /
+                        (1000 * 60)
+                    );
+
+                let seconds =
+                    Math.floor(
+                        (distance %
+                        (1000 * 60))
+                        /
+                        1000
+                    );
+
+                document.getElementById(
+                    "liveCountdown"
+                ).innerHTML = `
+                    ⏰ ${days}d :
+                    ${hours}h :
+                    ${minutes}m :
+                    ${seconds}s
+                `;
+
+            }, 1000);
+        }
+
+    </script>
+
+</body>
+</html>
